@@ -1,0 +1,62 @@
+name: "CodeQL"
+ 
+on:
+  push:
+    branches:
+
+      - main
+      - 'feature/**'
+      - 'release/**'
+ 
+  pull_request:
+    branches:
+      - main
+ 
+jobs:
+ 
+  analyze:
+     name: Analyze
+     runs-on: ubuntu-latest
+ 
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+ 
+    strategy:
+      fail-fast: false
+ 
+      matrix:
+        language: [ 'csharp' ]
+ 
+    steps:
+ 
+    - name: Checkout Repository
+
+      uses: actions/checkout@v4
+ 
+    - name: Setup .NET
+
+      uses: actions/setup-dotnet@v4
+ 
+      with:
+
+        dotnet-version: '8.0.x'
+ 
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v4
+       with:
+        languages: csharp
+ 
+    - name: Restore Packages
+
+      run: dotnet restore ./app/SampleWebApi/SampleWebApi.csproj
+ 
+    - name: Build Application
+
+      run: dotnet build ./app/SampleWebApi/SampleWebApi.csproj --configuration Release
+ 
+    - name: Perform CodeQL Analysis
+
+      uses: github/codeql-action/analyze@v4
+ 
