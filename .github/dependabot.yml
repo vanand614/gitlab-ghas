@@ -1,11 +1,7 @@
 version: 2
- 
 updates:
- 
 - package-ecosystem: "nuget"
- 
   directory: "/app/SampleWebApi"
- 
   schedule:
     interval: "daily"
  
