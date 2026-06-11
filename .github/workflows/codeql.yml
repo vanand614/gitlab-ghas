@@ -38,7 +38,8 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
-          languages: ${{ matrix.language }}
+          languages: csharp
+          queries: security-and-quality
  
       - name: Restore Packages
         run: dotnet restore ./app/SampleWebApi/SampleWebApi.csproj
