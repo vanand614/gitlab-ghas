@@ -1,20 +1,21 @@
-name: dependency-review
+name: Dependency Review
 
 on:
- pull_request:
- branches:
-  - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
- - read
+  contents: read
+  pull-requests: read
 
 jobs:
- dependency-review:
-  runs-on: ubuntu-latest
+  dependency-review:
+    runs-on: ubuntu-latest
 
-  steps:
-   -name: checkout Repository
-    uses: actions/checkout@v4
-  
-  -name: dependency review
-   uses: actions/dependency-review-actions@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
