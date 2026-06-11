@@ -1,0 +1,66 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'release/**'
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: csharp
+          queries: security-and-quality
+
+      - name: Restore Packages
+        run: dotnet restore ./app/SampleWebApi/SampleWebApi.csproj
+
+      - name: Build Application
+        run: dotnet build ./app/SampleWebApi/SampleWebApi.csproj --configuration Release
+
+      - name: Verify Vulnerable Code Exists
+        run: |
+          echo "Current Commit"
+          git rev-parse HEAD
+
+          echo "Checking SQL Injection"
+          grep -n "SELECT \* FROM Users" ./app/SampleWebApi/Program.cs || true
+
+          echo "Checking File.ReadAllText"
+          grep -n "File.ReadAllText" ./app/SampleWebApi/Program.cs || true
+
+          echo "Checking Process.Start"
+          grep -n "Process.Start" ./app/SampleWebApi/Program.cs || true
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
