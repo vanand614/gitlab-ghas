@@ -20,6 +20,7 @@ github_security_gate:
 
     script:
     - pwsh scripts/wait-for-codeql.ps1
+    - pwsh scripts/wait-for-dependency-review.ps1
     - pwsh scripts/github-security-check.ps1
 
     artifacts:
