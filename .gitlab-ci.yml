@@ -1,7 +1,7 @@
 stages:
 - build
-- security
 - github_pr
+- security
 - approval
 - deploy
 
@@ -13,23 +13,6 @@ build:
     - cd app/SampleWebApi
     - dotnet restore
     - dotnet build
-
-github_security_gate:
-    stage: security
-    image: mcr.microsoft.com/powershell:latest
-
-    script:
-    - pwsh scripts/wait-for-codeql.ps1
-    - pwsh scripts/wait-for-dependency-review.ps1
-    - pwsh scripts/github-security-check.ps1
-
-    artifacts:
-        when: always
-        expire_in: 30 days
-        paths:
-            - reports/
-
-    allow_failure: false
 
 create_github_pr:
   stage: github_pr
@@ -49,6 +32,23 @@ create_github_pr:
   artifacts:
     paths:
       - reports/
+
+github_security_gate:
+    stage: security
+    image: mcr.microsoft.com/powershell:latest
+
+    script:
+    - pwsh scripts/wait-for-codeql.ps1
+    - pwsh scripts/wait-for-dependency-review.ps1
+    - pwsh scripts/github-security-check.ps1
+
+    artifacts:
+        when: always
+        expire_in: 30 days
+        paths:
+            - reports/
+
+    allow_failure: false
 
 manual_approval:
     stage: approval
