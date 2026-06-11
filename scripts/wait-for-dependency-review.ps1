@@ -5,7 +5,7 @@ $Headers = @{
 
 $Branch = $env:CI_COMMIT_REF_NAME
 
-Write-Host "Waiting for Dependency Review..."
+Write-Host "Waiting for Dependency Review"
 
 for ($i = 1; $i -le 30; $i++) {
 
