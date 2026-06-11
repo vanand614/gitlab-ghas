@@ -48,6 +48,56 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapGet("/user", async (HttpContext context) =>
+{
+    string? id = context.Request.Query["id"];
+ 
+    string connectionString =
+
+        "Server=localhost;Database=TestDb;Trusted_Connection=True;";
+ 
+    string query =
+        "SELECT * FROM Users WHERE Id = " + id;
+ 
+    try
+    {
+        using var connection = new SqlConnection(connectionString);
+ 
+        using var command =
+            new SqlCommand(query, connection);
+ 
+        await connection.OpenAsync();
+ 
+        using var reader =
+            await command.ExecuteReaderAsync();
+ 
+        while (await reader.ReadAsync())
+        {
+            await context.Response.WriteAsync(
+                reader["Name"].ToString() + "\n");
+        }
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+ 
+        await context.Response.WriteAsync(
+            "Error: " + ex.Message);
+    }
+});
+
+app.MapGet("/file", (string fileName) =>
+{
+    return System.IO.File.ReadAllText(fileName);
+});
+
+app.MapGet("/download", (string fileName) =>
+{
+    var filePath = Path.Combine("uploads", fileName);
+ 
+    return System.IO.File.ReadAllText(filePath);
+});
+
 app.Run();
  
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
